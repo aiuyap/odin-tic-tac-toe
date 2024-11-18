@@ -1,87 +1,97 @@
-const gameBoard = (function() {
-    const board = [[1,2,3], [4,5,6], [7,8,9]];
+const startBtn = document.querySelector("#start-btn");
+startBtn.addEventListener("click", () => {
+    Gameboard.generateBoard();
+    startBtn.remove();
+});
+
+const restartBtn = document.querySelector("#reset-btn");
+restartBtn.addEventListener("click", () => {
+    resetGame();
+});
+
+const Gameboard = (function() {
+    let board = ["","","","","","","","",""];
 
     const getBoard = () => board;
-    const addInput = (choice, currentPlayer) => {
-        const row = choice[0];
-        const col = choice[1];
-        board[row][col] = currentPlayer;
-        return board;
+
+    const setBoard =() => board = ["","","","","","","","",""];
+
+    const generateBoard = () => {
+        document.querySelector("#start-btn").remove();
+
+        const divContainer = document.querySelector("#container");
+        const caseContainer = document.createElement("div");
+        caseContainer.setAttribute("id", "case");
+        const createCell = document.createElement("div");
+        createCell.classList.add("cell");
+        divContainer.appendChild(caseContainer);
+        for (let i = 0; i < 9; i++) {
+            caseContainer.appendChild(createCell.cloneNode());
+        }
+        const allCells = document.querySelectorAll(".cell");
+        allCells.forEach((cell, index) => {
+            cell.setAttribute("value", index);
+            cell.addEventListener("click", () => {
+                if (board[index] !== "") {
+                    alert("Cell already taken!");
+                    return
+                }
+                const currentPlayer = Game.getCurrentPlayer();
+                cell.textContent = currentPlayer;
+                board[index] = currentPlayer;
+                Game.checkGameStatus();
+            });
+        });
+    }
+
+    return {generateBoard, getBoard, setBoard};
+})();
+
+const Game = (function() {
+    let currentPlayer = "X";
+
+    const getCurrentPlayer = () => {
+        if(currentPlayer === "X") {
+            currentPlayer = "O";
+            return currentPlayer;
+        } else {
+            currentPlayer = "X";
+            return currentPlayer;
+        }
     };
 
-    const checkInput = (choice) => {
-        const row = choice[0];
-        const col = choice[1];
-        if (board[row][col] === "x" || board[row][col] === "o") {
-            return true;
+    const checkGameStatus = () => {
+        if(checkWinner(Gameboard.getBoard())) {
+            document.querySelector("#winner").textContent = `Player ${currentPlayer} won the game!`;
         }
-        return false;
+        if(checkTie(Gameboard.getBoard())) {
+            document.querySelector("#winner").textContent = `It's a tie!`;
+        }
     }
     
-    const checkGameStatus = (player) => {
-        for (let i = 0; i < 3; i++) {
-            if(board[i][0] === player && board[i][1] === player && board[i][2] === player) {
-                return true;
-            }
-        }
-
-        for (let i = 0; i < 3; i++) {
-            if(board[0][i] === player && board[1][i] === player && board[2][i] === player) {
-                return true;
-            }
-        }
-
-        if(board[0][0] === player && board[1][1] === player && board[2][2]) {
-            return true;
-        }
-
-        if(board[0][2] === player && board[1][1] === player && board[2][0]) {
-            return true;
-        }
-        return false;
-    }
-
-    return {getBoard, addInput, checkInput, checkGameStatus};
+    return {getCurrentPlayer, checkGameStatus};
 })();
 
-const displayController = (function() {
-    const startBtn = document.querySelector("#start-btn").addEventListener("click", startGame);
-    const getContainer = document.querySelector("#container");
-    const caseContainer = document.createElement("div");
-    caseContainer.setAttribute("id", "case");
-    const createCell = document.createElement("div");
-    createCell.classList.add("cell");
-
-    return {createCell, caseContainer, getContainer}
-})();
-
-function createPlayer (playerType) {
-    const player = playerType;
-
-    return {player};
-}
-
-function generateBoard() {
-    displayController.getContainer.appendChild(displayController.caseContainer);
-    for (let i = 0; i < 9; i++) {
-        displayController.caseContainer.appendChild(displayController.createCell.cloneNode());
+function checkWinner (board) {
+    const winningCombinations = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4 ,8], [2, 4, 8]];
+    for (let i = 0; i < winningCombinations.length; i++) {
+        const [a, b, c] = winningCombinations[i];
+        if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+            return true;
+        }
     }
+    return false;
 }
 
-function startGame () {
-    document.querySelector("#start-btn").remove();
-    generateBoard();
+function checkTie(board) {
+    return board.every(cell => cell !== "");
 }
 
-
-function getUserInput(player) {
-    const input = [];
-    input[0] = prompt(`Player ${player}'s turn. Enter row: `);
-    input[1] = prompt(`Player ${player}'s turn. Enter column: `);
-
-    return input;
-}
-
-function switchPlayer (player) {
-    return player === "x" ? "o" : "x";
+function resetGame () {
+    Gameboard.setBoard();
+    const allCells = document.querySelectorAll(".cell");
+    allCells.forEach(cell => {
+        cell.textContent = "";
+    });
+    document.querySelector("#winner").textContent = "";
 }

@@ -27,7 +27,7 @@ body {
 }
 
 #container {
-    height: 70vh;
+    height: 60vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -53,7 +53,8 @@ body {
     font-size: 5rem;
 }
 
-#start-btn {
+#start-btn, 
+#reset-btn {
     background-color: var(--secondary-color);
     border: none;
     height: 5rem;
@@ -62,8 +63,17 @@ body {
     font-size: 1.5rem;
 }
 
-#start-btn:hover {
+#start-btn:hover,
+#reset-btn:hover {
     background-color: var(--main-color);
     border: 1px solid var(--font-color);
     cursor: pointer;
+}
+
+#winner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 1rem;
 }
