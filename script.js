@@ -67,7 +67,6 @@ function startGame () {
     }
 }
 
-startGame();
 
 function getUserInput(player) {
     const input = [];
