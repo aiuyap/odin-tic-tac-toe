@@ -44,27 +44,33 @@ const gameBoard = (function() {
     return {getBoard, addInput, checkInput, checkGameStatus};
 })();
 
+const displayController = (function() {
+    const startBtn = document.querySelector("#start-btn").addEventListener("click", startGame);
+    const getContainer = document.querySelector("#container");
+    const caseContainer = document.createElement("div");
+    caseContainer.setAttribute("id", "case");
+    const createCell = document.createElement("div");
+    createCell.classList.add("cell");
+
+    return {createCell, caseContainer, getContainer}
+})();
+
 function createPlayer (playerType) {
     const player = playerType;
 
     return {player};
 }
 
-function startGame () {
-    let gameStatus = false;
-    console.log(gameBoard.getBoard());
-    let currentPlayer = "x";
-    while(!gameStatus) {
-        let userInput = getUserInput(currentPlayer);
-        if (gameBoard.checkInput(userInput)) {
-            alert("Invalid Input");
-        } else {
-            gameBoard.addInput(userInput, currentPlayer);
-        }
-        console.log(gameBoard.getBoard());
-        gameStatus = gameBoard.checkGameStatus(currentPlayer);
-        currentPlayer = switchPlayer(currentPlayer);
+function generateBoard() {
+    displayController.getContainer.appendChild(displayController.caseContainer);
+    for (let i = 0; i < 9; i++) {
+        displayController.caseContainer.appendChild(displayController.createCell.cloneNode());
     }
+}
+
+function startGame () {
+    document.querySelector("#start-btn").remove();
+    generateBoard();
 }
 
 
