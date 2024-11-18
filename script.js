@@ -1,12 +1,18 @@
+
+
+const restartBtn = document.createElement("button");
+restartBtn.setAttribute("id", "reset-btn");
+restartBtn.addEventListener("click", () => {
+    resetGame();
+});
+
 const startBtn = document.querySelector("#start-btn");
 startBtn.addEventListener("click", () => {
     Gameboard.generateBoard();
+    const winContainer = document.querySelector("#winner-container");
+    restartBtn.textContent = "Restart";
+    winContainer.appendChild(restartBtn);
     startBtn.remove();
-});
-
-const restartBtn = document.querySelector("#reset-btn");
-restartBtn.addEventListener("click", () => {
-    resetGame();
 });
 
 const Gameboard = (function() {
