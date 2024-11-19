@@ -56,6 +56,11 @@ form {
     font-size: 5rem;
 }
 
+.cell:hover {
+    cursor: pointer;
+    background-color: var(--font-color);
+}
+
 #start-btn, 
 #reset-btn {
     background-color: var(--secondary-color);
