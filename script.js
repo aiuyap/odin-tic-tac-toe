@@ -1,26 +1,26 @@
+const EventListenerHandler = (function() {
 
+    const restartBtn = document.createElement("button");
+    restartBtn.setAttribute("id", "reset-btn");
+    restartBtn.addEventListener("click", () => {
+        Game.resetGame();
+    });
 
-const restartBtn = document.createElement("button");
-restartBtn.setAttribute("id", "reset-btn");
-restartBtn.addEventListener("click", () => {
-    resetGame();
-});
-
-const startBtn = document.querySelector("#start-btn");
-startBtn.addEventListener("click", () => {
-    Gameboard.generateBoard();
-    const winContainer = document.querySelector("#winner-container");
-    restartBtn.textContent = "Restart";
-    winContainer.appendChild(restartBtn);
-    startBtn.remove();
-});
-
+    const startBtn = document.querySelector("#start-btn");
+    startBtn.addEventListener("click", () => {
+        Gameboard.generateBoard();
+        const winContainer = document.querySelector("#winner-container");
+        restartBtn.textContent = "Restart";
+        winContainer.appendChild(restartBtn);
+        startBtn.remove();
+    });
+})();
 const Gameboard = (function() {
     let board = ["","","","","","","","",""];
 
     const getBoard = () => board;
 
-    const setBoard =() => board = ["","","","","","","","",""];
+    const resetBoard =() => board = ["","","","","","","","",""];
 
     const generateBoard = () => {
         document.querySelector("#start-btn").remove();
@@ -50,7 +50,7 @@ const Gameboard = (function() {
         });
     }
 
-    return {generateBoard, getBoard, setBoard};
+    return {generateBoard, getBoard, resetBoard};
 })();
 
 const Game = (function() {
@@ -74,30 +74,35 @@ const Game = (function() {
             document.querySelector("#winner").textContent = `It's a tie!`;
         }
     }
+
+    function resetGame () {
+        Gameboard.resetBoard();
+        const allCells = document.querySelectorAll(".cell");
+        allCells.forEach(cell => {
+            cell.textContent = "";
+        });
+        document.querySelector("#winner").textContent = "";
+    }
+
+    function checkTie(board) {
+        return board.every(cell => cell !== "");
+    }
+
+    function checkWinner (board) {
+        const winningCombinations = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4 ,8], [2, 4, 8]];
+        for (let i = 0; i < winningCombinations.length; i++) {
+            const [a, b, c] = winningCombinations[i];
+            if (board[a] !== "" && board[a] === board[b] && board[a] === board[c]) {
+                return true;
+            }
+        }
+        return false;
+    }
     
-    return {getCurrentPlayer, checkGameStatus};
+    return {getCurrentPlayer, checkGameStatus, resetGame, checkTie, checkWinner};
 })();
 
-function checkWinner (board) {
-    const winningCombinations = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4 ,8], [2, 4, 8]];
-    for (let i = 0; i < winningCombinations.length; i++) {
-        const [a, b, c] = winningCombinations[i];
-        if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-            return true;
-        }
-    }
-    return false;
-}
 
-function checkTie(board) {
-    return board.every(cell => cell !== "");
-}
 
-function resetGame () {
-    Gameboard.setBoard();
-    const allCells = document.querySelectorAll(".cell");
-    allCells.forEach(cell => {
-        cell.textContent = "";
-    });
-    document.querySelector("#winner").textContent = "";
-}
+
+
