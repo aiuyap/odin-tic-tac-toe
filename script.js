@@ -6,8 +6,9 @@ const EventListenerHandler = (function() {
         Game.resetGame();
     });
 
-    const startBtn = document.querySelector("#start-btn");
-    startBtn.addEventListener("click", () => {
+    const nameForm = document.querySelector("form");
+    nameForm.addEventListener("submit", (e) => {
+        e.preventDefault();
         const player1name = document.querySelector("#player-x-name").value;
         const player2name = document.querySelector("#player-o-name").value;
         Game.setName(player1name, player2name);
@@ -15,11 +16,7 @@ const EventListenerHandler = (function() {
         const winContainer = document.querySelector("#winner-container");
         restartBtn.textContent = "Restart";
         winContainer.appendChild(restartBtn);
-        startBtn.remove();
-        document.querySelector("#player-x-name").remove();
-        document.querySelector("#player-o-name").remove();
-        document.querySelector(".player-label").remove();
-        document.querySelector(".player-label").remove();
+        nameForm.remove();
     });
 })();
 const Gameboard = (function() {

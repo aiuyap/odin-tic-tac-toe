@@ -26,7 +26,8 @@ body {
     background-color: var(--main-color);
 }
 
-#container {
+#container, 
+form {
     height: 60vh;
     display: flex;
     justify-content: center;
