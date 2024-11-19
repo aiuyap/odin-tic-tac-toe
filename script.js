@@ -8,11 +8,18 @@ const EventListenerHandler = (function() {
 
     const startBtn = document.querySelector("#start-btn");
     startBtn.addEventListener("click", () => {
+        const player1name = document.querySelector("#player-x-name").value;
+        const player2name = document.querySelector("#player-o-name").value;
+        Game.setName(player1name, player2name);
         Gameboard.generateBoard();
         const winContainer = document.querySelector("#winner-container");
         restartBtn.textContent = "Restart";
         winContainer.appendChild(restartBtn);
         startBtn.remove();
+        document.querySelector("#player-x-name").remove();
+        document.querySelector("#player-o-name").remove();
+        document.querySelector(".player-label").remove();
+        document.querySelector(".player-label").remove();
     });
 })();
 const Gameboard = (function() {
@@ -43,8 +50,8 @@ const Gameboard = (function() {
                     return
                 }
                 const currentPlayer = Game.getCurrentPlayer();
-                cell.textContent = currentPlayer;
-                board[index] = currentPlayer;
+                cell.textContent = currentPlayer.mark;
+                board[index] = currentPlayer.mark;
                 Game.checkGameStatus();
             });
         });
@@ -54,21 +61,29 @@ const Gameboard = (function() {
 })();
 
 const Game = (function() {
-    let currentPlayer = "X";
+    const players = [];
+    let currentPlayer;
+
+    function setName (name1, name2) {
+        players[0] = createPlayer(name1, "X");
+        players[1] = createPlayer(name2, "O")
+        currentPlayer = players[0];
+    }
 
     const getCurrentPlayer = () => {
-        if(currentPlayer === "X") {
-            currentPlayer = "O";
-            return currentPlayer;
+        document.querySelector("#winner").textContent = `${currentPlayer.name}'s Turn (${currentPlayer.mark})`;
+        if(currentPlayer === players[0]) {
+            currentPlayer = players[1];
+            return players[1];
         } else {
-            currentPlayer = "X";
-            return currentPlayer;
+            currentPlayer = players[0];
+            return players[0];
         }
     };
 
     const checkGameStatus = () => {
         if(checkWinner(Gameboard.getBoard())) {
-            document.querySelector("#winner").textContent = `Player ${currentPlayer} won the game!`;
+            document.querySelector("#winner").textContent = `${currentPlayer.name} won the game!`;
         }
         if(checkTie(Gameboard.getBoard())) {
             document.querySelector("#winner").textContent = `It's a tie!`;
@@ -99,8 +114,12 @@ const Game = (function() {
         return false;
     }
     
-    return {getCurrentPlayer, checkGameStatus, resetGame, checkTie, checkWinner};
+    return {setName, getCurrentPlayer, checkGameStatus, resetGame, checkTie, checkWinner};
 })();
+
+function createPlayer (name, mark) {
+    return {name, mark};
+}
 
 
 
